@@ -1,10 +1,17 @@
 package com.programmersbox.livefrontpokedex.components
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -13,13 +20,25 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PokeballLoading(
+fun PokeballLoading() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        PokeballLoadingAnimation(
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+fun PokeballLoadingAnimation(
     modifier: Modifier = Modifier,
-    sizeDp: Dp = 200.dp
+    sizeDp: Dp = 200.dp,
+    topColor: Color = Color.Red,
+    bottomColor: Color = Color.White
 ) {
     val animation = rememberInfiniteTransition(label = "pokeball_animation")
     val rotation by animation.animateFloat(
@@ -34,6 +53,8 @@ fun PokeballLoading(
 
     Pokeball(
         sizeDp = sizeDp,
+        topColor = topColor,
+        bottomColor = bottomColor,
         modifier = modifier.rotate(rotation)
     )
 }
@@ -41,7 +62,9 @@ fun PokeballLoading(
 @Composable
 fun Pokeball(
     modifier: Modifier = Modifier,
-    sizeDp: Dp = 200.dp
+    sizeDp: Dp = 200.dp,
+    topColor: Color = Color.Red,
+    bottomColor: Color = Color.White
 ) {
     val sizePx = with(LocalDensity.current) { sizeDp.toPx() }
 
@@ -55,13 +78,13 @@ fun Pokeball(
         modifier = modifier.size(sizeDp)
     ) {
         drawArc(
-            brush = Brush.linearGradient(listOf(Color.White, Color.White)),
+            brush = Brush.linearGradient(listOf(bottomColor, bottomColor)),
             startAngle = 0f,
             sweepAngle = 180f,
             useCenter = false
         )
         drawArc(
-            brush = Brush.linearGradient(listOf(Color.Red, Color.Red)),
+            brush = Brush.linearGradient(listOf(topColor, topColor)),
             startAngle = 180f,
             sweepAngle = 180f,
             useCenter = false
@@ -116,4 +139,10 @@ fun Pokeball(
             style = Stroke(4f)
         )
     }
+}
+
+@Preview
+@Composable
+private fun PokeballPreview() {
+    Pokeball()
 }

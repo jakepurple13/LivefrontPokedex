@@ -6,43 +6,34 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.programmersbox.livefrontpokedex.PokedexService
-import com.programmersbox.livefrontpokedex.PokemonInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.programmersbox.livefrontpokedex.data.repo.PokemonRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-internal class PokedexDetailViewModel(
+@HiltViewModel
+class PokedexDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val service: PokedexService
-): ViewModel() {
+    private val repository: PokemonRepository
+) : ViewModel() {
     private val name: String? = savedStateHandle["id"]
     var pokemonInfo: DetailState by mutableStateOf(DetailState.Loading)
 
     init {
-        load()
+        loadPokemon()
     }
 
-    private fun load() {
+    fun loadPokemon() {
         pokemonInfo = DetailState.Loading
         viewModelScope.launch {
-            name?.let { n ->
-                /*val fromDb = pokedexDatabase
-                    .getPokemonInfo(n)
-                    ?.let { DetailState.Success(it) }*/
-                pokemonInfo = /*fromDb ?:*/ service.fetchPokemon(n)
-                    //.onSuccess { pokedexDatabase.insertPokemonInfo(it) }
+            val state = name?.let { n ->
+                repository.fetchPokemon(n)
                     .fold(
                         onSuccess = { DetailState.Success(it) },
                         onFailure = { DetailState.Error }
                     )
-                /*pokedexDatabase.saved(n)
-                    .onEach { savedPokemon = it }
-                    .launchIn(viewModelScope)*/
-            }
+            } ?: DetailState.Error
+            pokemonInfo = state
         }
     }
 }

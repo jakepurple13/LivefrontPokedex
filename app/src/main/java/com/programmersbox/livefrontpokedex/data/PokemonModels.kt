@@ -1,6 +1,8 @@
-package com.programmersbox.livefrontpokedex
+package com.programmersbox.livefrontpokedex.data
 
 import androidx.compose.ui.graphics.Color
+import com.programmersbox.livefrontpokedex.firstCharCapital
+import com.programmersbox.livefrontpokedex.roundToDecimals
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

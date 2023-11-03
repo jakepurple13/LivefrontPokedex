@@ -1,8 +1,8 @@
 package com.programmersbox.livefrontpokedex.screens.detail
 
-import com.programmersbox.livefrontpokedex.PokemonInfo
+import com.programmersbox.livefrontpokedex.data.PokemonInfo
 
-internal sealed class DetailState {
+sealed class DetailState {
     class Success(val pokemonInfo: PokemonInfo) : DetailState()
 
     data object Loading : DetailState()

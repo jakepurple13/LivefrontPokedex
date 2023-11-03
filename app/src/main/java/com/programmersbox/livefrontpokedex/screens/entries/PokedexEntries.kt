@@ -1,6 +1,9 @@
 package com.programmersbox.livefrontpokedex.screens.entries
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -37,12 +40,14 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import com.programmersbox.livefrontpokedex.Pokemon
 import com.programmersbox.livefrontpokedex.components.CustomAdaptiveGridCell
+import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
+import com.programmersbox.livefrontpokedex.components.PokeballLoadingAnimation
+import com.programmersbox.livefrontpokedex.data.Pokemon
 import com.programmersbox.livefrontpokedex.firstCharCapital
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 
@@ -50,7 +55,7 @@ import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 @Composable
 fun PokedexEntries(
     onDetailNavigation: (String) -> Unit,
-    viewModel: PokedexEntriesViewModel = viewModel { PokedexEntriesViewModel() },
+    viewModel: PokedexEntriesViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
@@ -62,26 +67,46 @@ fun PokedexEntries(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
-        LazyVerticalGrid(
-            columns = CustomAdaptiveGridCell(500.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            contentPadding = padding,
-            modifier = Modifier
-                .padding(vertical = 2.dp)
-                .fillMaxSize()
-        ) {
-            items(
-                viewModel.pokedexEntries,
-                key = { it.url },
-                contentType = { it }
-            ) { pokemon ->
-                PokedexEntry(
-                    pokemon = pokemon,
-                    onClick = { onDetailNavigation(pokemon.pokedexEntry) },
-                    modifier = Modifier.animateItemPlacement()
+        Crossfade(
+            viewModel.hasError,
+            label = "entries_state"
+        ) { target ->
+            if (target) {
+                ErrorState(
+                    onTryAgain = viewModel::loadEntries,
+                    modifier = Modifier.padding(padding)
                 )
+            } else {
+                LazyVerticalGrid(
+                    columns = CustomAdaptiveGridCell(500.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    contentPadding = padding,
+                    modifier = Modifier
+                        .padding(vertical = 2.dp)
+                        .fillMaxSize()
+                ) {
+                    items(
+                        viewModel.pokedexEntries,
+                        key = { it.url },
+                        contentType = { it }
+                    ) { pokemon ->
+                        PokedexEntry(
+                            pokemon = pokemon,
+                            onClick = { onDetailNavigation(pokemon.pokedexEntry) },
+                            modifier = Modifier.animateItemPlacement()
+                        )
+                    }
+                }
             }
+        }
+
+        AnimatedVisibility(
+            viewModel.isLoading,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            PokeballLoading()
         }
     }
 }
@@ -137,7 +162,9 @@ private fun PokedexEntry(
                 exit = fadeOut(),
                 modifier = Modifier.align(Alignment.Center)
             ) {
-                PokeballLoading(sizeDp = 150.dp)
+                PokeballLoadingAnimation(
+                    sizeDp = 150.dp,
+                )
             }
 
             Text(

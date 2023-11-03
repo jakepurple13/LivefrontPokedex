@@ -11,9 +11,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import com.programmersbox.livefrontpokedex.roundToDecimals
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 internal data class PokemonGraphBean(
     val value: Float,
@@ -57,6 +65,7 @@ internal fun PokemonGraph(
     frameColor: Color = MaterialTheme.colorScheme.onSurface,
     innerFrameColor: Color = MaterialTheme.colorScheme.onSurface,
     mValueProgressPercentage: Float = 1f,
+    strokeWidth: Float = Stroke.HairlineWidth
 ) {
     val textMeasurer = rememberTextMeasurer()
 
@@ -72,7 +81,8 @@ internal fun PokemonGraph(
                 drawLinePokemonGraph(
                     state.mPointPairList[i].first,
                     state.mPointPairList[i].second,
-                    bean.color ?: innerFrameColor
+                    bean.color ?: innerFrameColor,
+                    strokeWidth
                 )
             }
             drawLabel(bean, i, state, textMeasurer, innerFrameColor, mValueProgressPercentage)
@@ -96,8 +106,8 @@ private fun DrawScope.drawFrameLine(path: Path, list: List<Pair<Double, Double>>
     drawPath(path, color, style = Stroke(1f))
 }
 
-private fun DrawScope.drawLinePokemonGraph(x: Double, y: Double, color: Color) {
-    drawLine(color, center, Offset(x.toFloat(), y.toFloat()))
+private fun DrawScope.drawLinePokemonGraph(x: Double, y: Double, color: Color, strokeWidth: Float = Stroke.HairlineWidth) {
+    drawLine(color, center, Offset(x.toFloat(), y.toFloat()), strokeWidth)
 }
 
 private fun DrawScope.drawLabel(
