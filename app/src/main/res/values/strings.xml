@@ -9,5 +9,6 @@
     <string name="clear_search_text_entries">Clear Search Text</string>
 
     <!--DetailScreen-->
-    <string name="show_all_images_detail">Show All Images</string>
+    <string name="show_all_images_details">Show All Images</string>
+    <string name="base_stats_details">Base Stats</string>
 </resources>

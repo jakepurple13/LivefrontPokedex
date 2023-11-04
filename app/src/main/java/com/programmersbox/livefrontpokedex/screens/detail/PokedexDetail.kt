@@ -66,6 +66,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -74,11 +75,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.R
+import com.programmersbox.livefrontpokedex.Tags
 import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
-import com.programmersbox.livefrontpokedex.components.PokemonGraph
-import com.programmersbox.livefrontpokedex.components.PokemonGraphBean
-import com.programmersbox.livefrontpokedex.components.rememberPokemonGraphState
 import com.programmersbox.livefrontpokedex.data.PokemonInfo
 import com.programmersbox.livefrontpokedex.data.SpriteType
 import com.programmersbox.livefrontpokedex.firstCharCapital
@@ -104,7 +103,10 @@ internal fun PokedexDetail(
                         TopAppBar(
                             title = { Text(stringResource(R.string.pokedex_title)) },
                             navigationIcon = {
-                                IconButton(onClick = onBackPress) {
+                                IconButton(
+                                    onClick = onBackPress,
+                                    modifier = Modifier.testTag(Tags.BACK_BUTTON)
+                                ) {
                                     Icon(Icons.Default.ArrowBack, null)
                                 }
                             },
@@ -221,7 +223,7 @@ private fun ContentBody(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                "Base Stats",
+                stringResource(R.string.base_stats_details),
                 style = MaterialTheme.typography.displaySmall
             )
 
@@ -231,22 +233,6 @@ private fun ContentBody(
             LaunchedEffect(Unit) {
                 mValueProgressPercentage.animateTo(1f)
             }
-
-            PokemonGraph(
-                state = rememberPokemonGraphState(
-                    list = pokemon.stats.map {
-                        PokemonGraphBean(
-                            it.baseStat.toFloat(),
-                            it.stat.shortenedName,
-                            it.stat.statColor
-                        )
-                    },
-                    maxValue = 300f
-                ),
-                mValueProgressPercentage = mValueProgressPercentage.value,
-                strokeWidth = 2f,
-                modifier = Modifier.size(425.dp)
-            )
 
             pokemon.stats.forEach {
                 StatInfoBar(
@@ -289,7 +275,7 @@ private fun ShowImages(pokemon: PokemonInfo) {
             onClick = { showMoreImages = !showMoreImages }
         ) {
             Text(
-                stringResource(R.string.show_all_images_detail),
+                stringResource(R.string.show_all_images_details),
                 modifier = Modifier.padding(8.dp)
             )
         }
@@ -420,7 +406,10 @@ private fun ContentHeader(
     TopAppBar(
         title = { Text(pokemon.name.firstCharCapital()) },
         navigationIcon = {
-            IconButton(onClick = onBackPress) {
+            IconButton(
+                onClick = onBackPress,
+                modifier = Modifier.testTag(Tags.BACK_BUTTON)
+            ) {
                 Icon(Icons.Default.ArrowBack, null)
             }
         },

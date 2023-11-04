@@ -6,7 +6,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,13 +43,15 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.R
+import com.programmersbox.livefrontpokedex.Tags
 import com.programmersbox.livefrontpokedex.components.CustomAdaptiveGridCell
 import com.programmersbox.livefrontpokedex.components.DynamicSearchBar
 import com.programmersbox.livefrontpokedex.components.ErrorState
@@ -93,14 +94,17 @@ fun PokedexEntries(
                     }
                 },
                 isDocked = isHorizontalOrientation,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .testTag(Tags.SEARCH_BAR_ENTRIES)
+                    .fillMaxWidth()
             ) {
                 viewModel.filteredEntries
                     .take(10)
                     .forEach {
                         SearchItem(
                             pokemon = it,
-                            onClick = { viewModel.onSearchQueryChange(it.name) }
+                            onClick = { viewModel.onSearchQueryChange(it.name) },
+                            modifier = Modifier.testTag(Tags.SEARCH_ITEM_ENTRIES)
                         )
                     }
             }
@@ -123,6 +127,7 @@ fun PokedexEntries(
                     contentPadding = padding,
                     state = lazyGridState,
                     modifier = Modifier
+                        .testTag(Tags.POKEDEX_LIST_ENTRIES)
                         .padding(vertical = 2.dp)
                         .fillMaxSize()
                 ) {
@@ -134,7 +139,9 @@ fun PokedexEntries(
                         PokedexEntry(
                             pokemon = pokemon,
                             onClick = { onDetailNavigation(pokemon.pokedexEntry) },
-                            modifier = Modifier.animateItemPlacement()
+                            modifier = Modifier
+                                .animateItemPlacement()
+                                .testTag(Tags.POKEDEX_ENTRY_ENTRIES)
                         )
                     }
                 }
@@ -182,42 +189,36 @@ private fun PokedexEntry(
                 .padding(4.dp)
                 .fillMaxSize()
         ) {
-            val painter = rememberAsyncImagePainter(pokemon.imageUrl)
-
-            Image(
-                painter = painter,
+            SubcomposeAsyncImage(
+                model = pokemon.imageUrl,
                 contentDescription = pokemon.name,
-                contentScale = ContentScale.FillWidth,
-                colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-                modifier = Modifier
-                    .widthIn(max = 800.dp)
-                    .fillMaxWidth(.9f)
-                    .wrapContentHeight(Alignment.Top, true)
-                    .scale(1f, 1.8f)
-                    .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                    .alpha(.5f)
+                success = {
+                    SubcomposeAsyncImageContent(
+                        contentScale = ContentScale.FillWidth,
+                        colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+                        modifier = Modifier
+                            .widthIn(max = 800.dp)
+                            .fillMaxWidth(.9f)
+                            .wrapContentHeight(Alignment.Top, true)
+                            .scale(1f, 1.8f)
+                            .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                            .alpha(.5f)
+                    )
+                    SubcomposeAsyncImageContent(
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .fillMaxWidth()
+                            .aspectRatio(1.2f)
+                            .fillMaxHeight()
+                    )
+                },
+                loading = {
+                    PokeballLoadingAnimation(
+                        sizeDp = 150.dp,
+                    )
+                }
             )
-            Image(
-                painter = painter,
-                contentDescription = pokemon.name,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .widthIn(max = 500.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1.2f)
-                    .fillMaxHeight()
-            )
-
-            //Needed because it thinks it's using the ColumnScope otherwise
-            androidx.compose.animation.AnimatedVisibility(
-                painter.state is AsyncImagePainter.State.Loading,
-                exit = fadeOut(),
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                PokeballLoadingAnimation(
-                    sizeDp = 150.dp,
-                )
-            }
 
             Text(
                 pokemon.pokedexEntry,
