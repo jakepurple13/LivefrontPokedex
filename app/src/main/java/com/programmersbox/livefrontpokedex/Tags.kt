@@ -10,4 +10,5 @@ object Tags {
     const val SEARCH_BAR_ENTRIES = "SEARCH_BAR_ENTRIES"
     const val SEARCH_ITEM_ENTRIES = "SEARCH_ITEM_ENTRIES"
     //Details Screen
+    const val NAME_DETAILS = "NAME_DETAILS"
 }

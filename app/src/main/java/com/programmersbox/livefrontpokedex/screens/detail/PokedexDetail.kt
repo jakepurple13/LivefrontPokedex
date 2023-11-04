@@ -6,7 +6,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -72,7 +71,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.Tags
@@ -169,7 +169,8 @@ private fun ContentBody(
 
         Text(
             pokemon.name.firstCharCapital(),
-            style = MaterialTheme.typography.displayMedium
+            style = MaterialTheme.typography.displayMedium,
+            modifier = Modifier.testTag(Tags.NAME_DETAILS)
         )
 
         Row(
@@ -437,29 +438,30 @@ private fun ImageWithBlurImage(
         contentAlignment = Alignment.Center,
         modifier = modifier
     ) {
-        val painter = rememberAsyncImagePainter(url)
-        Image(
-            painter = painter,
+        SubcomposeAsyncImage(
+            model = url,
             contentDescription = name,
-            contentScale = ContentScale.FillWidth,
-            colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-            modifier = Modifier
-                .size(blurSize)
-                .fillMaxWidth(.9f)
-                .wrapContentHeight(Alignment.Top, true)
-                .scale(1f, 1.8f)
-                .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                .alpha(.5f)
-        )
-        Image(
-            painter = painter,
-            contentDescription = name,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(imageSize)
-                .fillMaxWidth()
-                .aspectRatio(1.2f)
-                .fillMaxHeight()
+            success = {
+                SubcomposeAsyncImageContent(
+                    contentScale = ContentScale.FillWidth,
+                    colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+                    modifier = Modifier
+                        .size(blurSize)
+                        .fillMaxWidth(.9f)
+                        .wrapContentHeight(Alignment.Top, true)
+                        .scale(1.8f, 1.8f)
+                        .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                        .alpha(.5f)
+                )
+                SubcomposeAsyncImageContent(
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(imageSize)
+                        .fillMaxWidth()
+                        .aspectRatio(1.2f)
+                        .fillMaxHeight()
+                )
+            }
         )
         additionalContent()
     }

@@ -51,6 +51,9 @@ android {
     }
     packaging {
         resources {
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/DEPENDENCIES"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
@@ -99,11 +102,11 @@ dependencies {
 
     // Instrumentation Testing
     kspAndroidTest(libs.hilt.android.compiler)
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation(libs.androidx.navigation.testing)
 }

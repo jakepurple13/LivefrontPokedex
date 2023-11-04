@@ -19,8 +19,10 @@ class PokedexEntriesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val pokedexEntries = mutableStateListOf<Pokemon>()
+
     var isLoading by mutableStateOf(false)
         private set
+
     var hasError by mutableStateOf(false)
         private set
 
