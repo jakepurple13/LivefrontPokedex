@@ -1,5 +1,6 @@
 package com.programmersbox.livefrontpokedex.screens.entries
 
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,9 +18,16 @@ class PokedexEntriesViewModel @Inject constructor(
     private val repository: PokemonRepository
 ) : ViewModel() {
 
-    val pokedexEntries = mutableStateListOf<Pokemon>()
+    private val pokedexEntries = mutableStateListOf<Pokemon>()
     var isLoading by mutableStateOf(false)
     var hasError by mutableStateOf(false)
+
+    var searchQuery by mutableStateOf("")
+    var isSearchActive by mutableStateOf(false)
+
+    val filteredEntries by derivedStateOf {
+        pokedexEntries.filter { it.name.contains(searchQuery, true) }
+    }
 
     init {
         loadEntries()
@@ -41,5 +49,13 @@ class PokedexEntriesViewModel @Inject constructor(
                     hasError = true
                 }
         }
+    }
+
+    fun onSearchQueryChange(updatedQuery: String) {
+        searchQuery = updatedQuery
+    }
+
+    fun changeSearchActiveState(state: Boolean) {
+        isSearchActive = state
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,14 +21,20 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -36,36 +43,68 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
+import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.components.CustomAdaptiveGridCell
+import com.programmersbox.livefrontpokedex.components.DynamicSearchBar
 import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
 import com.programmersbox.livefrontpokedex.components.PokeballLoadingAnimation
 import com.programmersbox.livefrontpokedex.data.Pokemon
 import com.programmersbox.livefrontpokedex.firstCharCapital
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun PokedexEntries(
     onDetailNavigation: (String) -> Unit,
+    isHorizontalOrientation: Boolean,
     viewModel: PokedexEntriesViewModel = hiltViewModel(),
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val lazyGridState = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Pokedex") },
-                scrollBehavior = scrollBehavior
-            )
+            DynamicSearchBar(
+                query = viewModel.searchQuery,
+                onQueryChange = viewModel::onSearchQueryChange,
+                active = viewModel.isSearchActive,
+                onActiveChange = viewModel::changeSearchActiveState,
+                placeholder = { Text(stringResource(R.string.pokedex_title)) },
+                onSearch = { viewModel.isSearchActive = false },
+                leadingIcon = { Icon(Icons.Default.Search, stringResource(R.string.search_icon_entries)) },
+                trailingIcon = {
+                    AnimatedVisibility(
+                        viewModel.searchQuery.isNotEmpty()
+                    ) {
+                        IconButton(
+                            onClick = {
+                                viewModel.onSearchQueryChange("")
+                                scope.launch { lazyGridState.animateScrollToItem(0) }
+                            }
+                        ) { Icon(Icons.Default.Clear, stringResource(R.string.clear_search_text_entries)) }
+                    }
+                },
+                isDocked = isHorizontalOrientation,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                viewModel.filteredEntries
+                    .take(10)
+                    .forEach {
+                        SearchItem(
+                            pokemon = it,
+                            onClick = { viewModel.onSearchQueryChange(it.name) }
+                        )
+                    }
+            }
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { padding ->
         Crossfade(
             viewModel.hasError,
@@ -82,12 +121,13 @@ fun PokedexEntries(
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                     contentPadding = padding,
+                    state = lazyGridState,
                     modifier = Modifier
                         .padding(vertical = 2.dp)
                         .fillMaxSize()
                 ) {
                     items(
-                        viewModel.pokedexEntries,
+                        viewModel.filteredEntries,
                         key = { it.url },
                         contentType = { it }
                     ) { pokemon ->
@@ -111,11 +151,23 @@ fun PokedexEntries(
     }
 }
 
+@Composable
+private fun SearchItem(
+    pokemon: Pokemon,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    ListItem(
+        headlineContent = { Text(pokemon.name) },
+        modifier = modifier.clickable { onClick() }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PokedexEntry(
-    modifier: Modifier = Modifier,
     pokemon: Pokemon,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     ElevatedCard(

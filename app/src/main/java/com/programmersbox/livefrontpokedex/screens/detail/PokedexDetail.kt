@@ -66,12 +66,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
+import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
 import com.programmersbox.livefrontpokedex.components.PokemonGraph
@@ -100,7 +102,7 @@ internal fun PokedexDetail(
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Pokedex") },
+                            title = { Text(stringResource(R.string.pokedex_title)) },
                             navigationIcon = {
                                 IconButton(onClick = onBackPress) {
                                     Icon(Icons.Default.ArrowBack, null)
@@ -287,7 +289,7 @@ private fun ShowImages(pokemon: PokemonInfo) {
             onClick = { showMoreImages = !showMoreImages }
         ) {
             Text(
-                "Show All Images",
+                stringResource(R.string.show_all_images_detail),
                 modifier = Modifier.padding(8.dp)
             )
         }

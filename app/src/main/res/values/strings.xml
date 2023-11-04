@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">LivefrontPokedex</string>
+
+    <!--Global-->
+    <string name="pokedex_title">Pokedex</string>
+
+    <!--EntriesScreen-->
+    <string name="search_icon_entries">Search Icon</string>
+    <string name="clear_search_text_entries">Clear Search Text</string>
+
+    <!--DetailScreen-->
+    <string name="show_all_images_detail">Show All Images</string>
 </resources>
