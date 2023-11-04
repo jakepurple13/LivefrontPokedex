@@ -78,7 +78,7 @@ fun PokedexEntries(
                 active = viewModel.isSearchActive,
                 onActiveChange = viewModel::changeSearchActiveState,
                 placeholder = { Text(stringResource(R.string.pokedex_title)) },
-                onSearch = { viewModel.isSearchActive = false },
+                onSearch = { viewModel.changeSearchActiveState(false) },
                 leadingIcon = { Icon(Icons.Default.Search, stringResource(R.string.search_icon_entries)) },
                 trailingIcon = {
                     AnimatedVisibility(

@@ -20,10 +20,15 @@ class PokedexEntriesViewModel @Inject constructor(
 
     private val pokedexEntries = mutableStateListOf<Pokemon>()
     var isLoading by mutableStateOf(false)
+        private set
     var hasError by mutableStateOf(false)
+        private set
 
     var searchQuery by mutableStateOf("")
+        private set
+
     var isSearchActive by mutableStateOf(false)
+        private set
 
     val filteredEntries by derivedStateOf {
         pokedexEntries.filter { it.name.contains(searchQuery, true) }

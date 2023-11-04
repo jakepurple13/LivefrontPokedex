@@ -18,6 +18,7 @@ class PokedexDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private val name: String? = savedStateHandle["id"]
     var pokemonInfo: DetailState by mutableStateOf(DetailState.Loading)
+        private set
 
     init {
         loadPokemon()
