@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
@@ -127,9 +128,9 @@ fun PokedexEntries(
                     contentPadding = padding,
                     state = lazyGridState,
                     modifier = Modifier
-                        .testTag(Tags.POKEDEX_LIST_ENTRIES)
                         .padding(vertical = 2.dp)
                         .fillMaxSize()
+                        .testTag(Tags.POKEDEX_LIST_ENTRIES)
                 ) {
                     items(
                         viewModel.filteredEntries,
@@ -166,7 +167,10 @@ private fun SearchItem(
 ) {
     ListItem(
         headlineContent = { Text(pokemon.name) },
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier.clickable(
+            role = Role.Button,
+            onClickLabel = pokemon.name
+        ) { onClick() }
     )
 }
 
@@ -200,7 +204,7 @@ private fun PokedexEntry(
                             .widthIn(max = 800.dp)
                             .fillMaxWidth(.9f)
                             .wrapContentHeight(Alignment.Top, true)
-                            .scale(1f, 1.8f)
+                            .scale(1.8f, 1.8f)
                             .blur(70.dp, BlurredEdgeTreatment.Unbounded)
                             .alpha(.5f)
                     )
