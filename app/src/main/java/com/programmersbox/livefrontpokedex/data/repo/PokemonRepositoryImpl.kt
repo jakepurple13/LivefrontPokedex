@@ -13,7 +13,7 @@ class PokemonRepositoryImpl @Inject constructor(
     override suspend fun fetchPokedexEntries(page: Int): Result<List<Pokemon>> {
         return runCatching {
             if (pokedexEntries.isEmpty()) {
-                pokedexEntries.addAll(service.fetchPokemonList(page).getOrNull()?.results.orEmpty())
+                pokedexEntries.addAll(service.fetchPokemonList(page).getOrThrow().results)
             }
             pokedexEntries
         }

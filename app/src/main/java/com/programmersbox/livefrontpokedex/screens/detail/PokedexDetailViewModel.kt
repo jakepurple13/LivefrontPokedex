@@ -29,7 +29,7 @@ class PokedexDetailViewModel @Inject constructor(
             val state = name?.let { n ->
                 repository.fetchPokemon(n)
                     .fold(
-                        onSuccess = { DetailState.Success(it) },
+                        onSuccess = { println(it);DetailState.Success(it) },
                         onFailure = { DetailState.Error }
                     )
             } ?: DetailState.Error

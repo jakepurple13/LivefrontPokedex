@@ -33,6 +33,7 @@ class PokedexEntriesViewModel @Inject constructor(
                 .fetchPokedexEntries(0)
                 .onSuccess {
                     isLoading = false
+                    pokedexEntries.clear()
                     pokedexEntries.addAll(it)
                 }
                 .onFailure {

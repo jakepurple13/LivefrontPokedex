@@ -67,11 +67,11 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
 import com.programmersbox.livefrontpokedex.components.PokemonGraph
@@ -474,7 +474,7 @@ private fun ImageWithBlurImage(
     }
 }
 
-@Preview
+@LightAndDarkPreviews
 @Composable
 private fun StateInfoPreview() {
     LivefrontPokedexTheme {
@@ -489,7 +489,7 @@ private fun StateInfoPreview() {
     }
 }
 
-@Preview
+@LightAndDarkPreviews
 @Composable
 private fun ContentBodyPreview() {
     LivefrontPokedexTheme {

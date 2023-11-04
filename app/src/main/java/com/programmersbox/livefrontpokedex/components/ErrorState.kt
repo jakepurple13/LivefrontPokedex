@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 
 @Composable
@@ -34,7 +34,7 @@ fun ErrorState(
     }
 }
 
-@Preview
+@LightAndDarkPreviews
 @Composable
 private fun ErrorStatePreview() {
     LivefrontPokedexTheme {

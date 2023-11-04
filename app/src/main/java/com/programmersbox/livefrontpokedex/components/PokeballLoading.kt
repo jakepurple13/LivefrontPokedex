@@ -9,6 +9,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,9 +21,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
+import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 
 @Composable
 fun PokeballLoading() {
@@ -141,8 +143,12 @@ fun Pokeball(
     }
 }
 
-@Preview
+@LightAndDarkPreviews
 @Composable
 private fun PokeballPreview() {
-    Pokeball()
+    LivefrontPokedexTheme {
+        Surface {
+            Pokeball()
+        }
+    }
 }
