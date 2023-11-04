@@ -12,7 +12,7 @@ class MockPokemonRepository : PokemonRepository {
     }
 
     override suspend fun fetchPokemon(name: String): Result<PokemonInfo> {
-        return if (name == "Pikachu")
+        return if (name.equals("Pikachu", true))
             Result.success(Pikachu)
         else
             Result.failure(Exception("Cannot find $name"))
@@ -20,9 +20,9 @@ class MockPokemonRepository : PokemonRepository {
 
     companion object {
         val pokemonList = listOf(
-            Pokemon(name = "Pikachu", url = "https://pokeapi.co/api/v2/pokemon/25/"),
-            Pokemon(name = "Charmander", url = "https://pokeapi.co/api/v2/pokemon/4/"),
-            Pokemon(name = "Pikachu-libre", url = "https://pokeapi.co/api/v2/pokemon/10084/")
+            Pokemon(name = "Pikachu", url = "https://pokeapi.co/api/v2/pokemon/pikachu/"),
+            Pokemon(name = "Charmander", url = "https://pokeapi.co/api/v2/pokemon/charmander/"),
+            Pokemon(name = "Pikachu-libre", url = "https://pokeapi.co/api/v2/pokemon/pikachu-libre/")
         )
 
         val Pikachu = PokemonInfo(

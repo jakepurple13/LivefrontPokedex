@@ -134,7 +134,9 @@ internal fun PokedexDetail(
                             scrollBehavior = scrollBehavior
                         )
                     },
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .testTag(Tags.SUCCESS_DETAILS)
                 ) { padding ->
                     ContentBody(
                         pokemon = target.pokemonInfo,
@@ -170,7 +172,6 @@ private fun ContentBody(
         Text(
             pokemon.name.firstCharCapital(),
             style = MaterialTheme.typography.displayMedium,
-            modifier = Modifier.testTag(Tags.NAME_DETAILS)
         )
 
         Row(
@@ -411,7 +412,7 @@ private fun ContentHeader(
                 onClick = onBackPress,
                 modifier = Modifier.testTag(Tags.BACK_BUTTON)
             ) {
-                Icon(Icons.Default.ArrowBack, null)
+                Icon(Icons.Default.ArrowBack, stringResource(R.string.back_button))
             }
         },
         actions = {

@@ -3,6 +3,7 @@
 
     <!--Global-->
     <string name="pokedex_title">Pokedex</string>
+    <string name="back_button">Back Button</string>
 
     <!--EntriesScreen-->
     <string name="search_icon_entries">Search Icon</string>
