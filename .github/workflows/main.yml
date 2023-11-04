@@ -1,0 +1,42 @@
+name: Android CI Test
+
+on:
+  push:
+    branches: 
+      - develop
+      - master
+    paths-ignore:
+      - '.github/**'
+  pull_request:
+    branches: 
+      - develop
+      - master
+    paths-ignore:
+      - '.github/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: adopt
+          cache: gradle
+
+      - name: Run Unit Tests
+        id: test
+        uses: gradle/gradle-build-action@v2.9.0
+        with:
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+          arguments: test
+
+      - name: Build with Gradle
+        run: ./gradlew build
