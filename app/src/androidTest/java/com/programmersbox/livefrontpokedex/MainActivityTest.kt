@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -65,7 +66,10 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("pikachu", ignoreCase = true)
             .performClick()
         composeTestRule
-            .onNodeWithTag(Tags.BACK_BUTTON)
+            .onNodeWithContentDescription(
+                appContext.getString(R.string.back_button),
+                useUnmergedTree = true
+            )
             .performClick()
         isDisplayingEntries()
     }
@@ -74,16 +78,15 @@ class MainActivityTest {
     fun canSearchForPikachu() {
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(
-                SemanticsProperties.ContentDescription,
-                listOf(appContext.getString(R.string.search_icon_entries))
+                SemanticsProperties.TestTag,
+                Tags.SEARCH_BAR_ENTRIES
             ),
             useUnmergedTree = true
         ).performClick()
-        composeTestRule.onNodeWithText(
-            appContext.getString(R.string.pokedex_title),
+        composeTestRule.onNodeWithContentDescription(
+            appContext.getString(androidx.compose.material3.R.string.search_bar_search),
             useUnmergedTree = true
-        )
-            .performTextInput("Pikachu")
+        ).performTextInput("Pikachu")
         composeTestRule
             .onAllNodesWithTag(Tags.SEARCH_ITEM_ENTRIES)
             .assertCountEquals(2)
@@ -93,6 +96,6 @@ class MainActivityTest {
             .performClick()
         composeTestRule.onNodeWithTag(Tags.POKEDEX_LIST_ENTRIES)
             .onChildren()
-            .assertCountEquals(2)
+            .assertCountEquals(3)
     }
 }

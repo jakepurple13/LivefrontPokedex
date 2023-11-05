@@ -67,6 +67,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -405,12 +407,15 @@ private fun ContentHeader(
     onBackPress: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
+    val backButtonContentDescription = stringResource(id = R.string.back_button)
     TopAppBar(
         title = { Text(pokemon.name.firstCharCapital()) },
         navigationIcon = {
             IconButton(
                 onClick = onBackPress,
-                modifier = Modifier.testTag(Tags.BACK_BUTTON)
+                modifier = Modifier
+                    .testTag(Tags.BACK_BUTTON)
+                    .semantics { contentDescription = backButtonContentDescription }
             ) {
                 Icon(Icons.Default.ArrowBack, stringResource(R.string.back_button))
             }
