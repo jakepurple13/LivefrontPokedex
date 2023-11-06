@@ -16,6 +16,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -96,6 +97,10 @@ class MainActivityTest {
             .onAllNodesWithTag(Tags.SEARCH_ITEM_ENTRIES)
             .onFirst()
             .performClick()
+        composeTestRule.onNodeWithContentDescription(
+            appContext.getString(androidx.compose.material3.R.string.search_bar_search),
+            useUnmergedTree = true
+        ).performImeAction()
         composeTestRule.onNodeWithTag(Tags.POKEDEX_LIST_ENTRIES)
             .onChildren()
             .assertCountEquals(3)
