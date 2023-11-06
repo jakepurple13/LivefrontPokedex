@@ -6,6 +6,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -195,35 +196,39 @@ private fun PokedexEntry(
         ) {
             GlideImage(
                 imageModel = { pokemon.imageUrl },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.FillWidth,
-                    colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-                ),
-                modifier = Modifier
-                    .widthIn(max = 800.dp)
-                    .fillMaxWidth(.9f)
-                    .wrapContentHeight(Alignment.Top, true)
-                    .scale(1.8f, 1.8f)
-                    .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                    .alpha(.5f)
-            )
+                success = { _, painter ->
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.FillWidth,
+                        colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+                        modifier = Modifier
+                            .widthIn(max = 800.dp)
+                            .fillMaxWidth(.9f)
+                            .wrapContentHeight(Alignment.Top, true)
+                            .scale(1.8f, 1.8f)
+                            .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                            .alpha(.5f)
+                    )
 
-            GlideImage(
-                imageModel = { pokemon.imageUrl },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Fit,
-                ),
+                    Image(
+                        painter = painter,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .widthIn(max = 500.dp)
+                            .fillMaxWidth()
+                            .aspectRatio(1.2f)
+                            .fillMaxHeight()
+                    )
+                },
                 loading = {
                     PokeballLoadingAnimation(
                         sizeDp = 150.dp,
                         modifier = Modifier.size(150.dp)
                     )
                 },
-                modifier = Modifier
-                    .widthIn(max = 500.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1.2f)
-                    .fillMaxHeight()
+                imageOptions = ImageOptions(contentDescription = pokemon.name)
             )
 
             Text(

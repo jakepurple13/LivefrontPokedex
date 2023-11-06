@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -78,6 +79,7 @@ import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.Tags
 import com.programmersbox.livefrontpokedex.components.ErrorState
 import com.programmersbox.livefrontpokedex.components.PokeballLoading
+import com.programmersbox.livefrontpokedex.components.PokeballLoadingAnimation
 import com.programmersbox.livefrontpokedex.data.PokemonInfo
 import com.programmersbox.livefrontpokedex.data.SpriteType
 import com.programmersbox.livefrontpokedex.firstCharCapital
@@ -435,29 +437,39 @@ private fun ImageWithBlurImage(
     ) {
         GlideImage(
             imageModel = { url },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.FillWidth,
-                colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-            ),
-            modifier = Modifier
-                .size(blurSize)
-                .fillMaxWidth(.9f)
-                .wrapContentHeight(Alignment.Top, true)
-                .scale(1.8f, 1.8f)
-                .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                .alpha(.5f)
-        )
+            success = { _, painter ->
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.FillWidth,
+                    colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+                    modifier = Modifier
+                        .size(blurSize)
+                        .fillMaxWidth(.9f)
+                        .wrapContentHeight(Alignment.Top, true)
+                        .scale(1.8f, 1.8f)
+                        .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                        .alpha(.5f)
+                )
 
-        GlideImage(
-            imageModel = { url },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Fit,
-            ),
-            modifier = Modifier
-                .size(imageSize)
-                .fillMaxWidth()
-                .aspectRatio(1.2f)
-                .fillMaxHeight()
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(imageSize)
+                        .fillMaxWidth()
+                        .aspectRatio(1.2f)
+                        .fillMaxHeight()
+                )
+            },
+            loading = {
+                PokeballLoadingAnimation(
+                    sizeDp = 150.dp,
+                    modifier = Modifier.size(150.dp)
+                )
+            },
+            imageOptions = ImageOptions(contentDescription = name)
         )
         additionalContent()
     }
