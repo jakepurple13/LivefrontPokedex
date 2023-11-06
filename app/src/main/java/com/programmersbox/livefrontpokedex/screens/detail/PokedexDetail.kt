@@ -53,7 +53,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
@@ -86,11 +85,10 @@ import com.programmersbox.livefrontpokedex.firstCharCapital
 import com.programmersbox.livefrontpokedex.ui.theme.FemaleColor
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 import com.programmersbox.livefrontpokedex.ui.theme.MaleColor
-import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PokedexDetail(
     onBackPress: () -> Unit,
@@ -444,6 +442,7 @@ private fun ImageWithBlurImage(
                     contentScale = ContentScale.FillWidth,
                     colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .size(blurSize)
                         .fillMaxWidth(.9f)
                         .wrapContentHeight(Alignment.Top, true)
@@ -457,6 +456,7 @@ private fun ImageWithBlurImage(
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .size(imageSize)
                         .fillMaxWidth()
                         .aspectRatio(1.2f)
@@ -468,8 +468,7 @@ private fun ImageWithBlurImage(
                     sizeDp = 150.dp,
                     modifier = Modifier.size(150.dp)
                 )
-            },
-            imageOptions = ImageOptions(contentDescription = name)
+            }
         )
         additionalContent()
     }

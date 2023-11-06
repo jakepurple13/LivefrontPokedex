@@ -203,6 +203,7 @@ private fun PokedexEntry(
                         contentScale = ContentScale.FillWidth,
                         colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
                         modifier = Modifier
+                            .align(Alignment.Center)
                             .widthIn(max = 800.dp)
                             .fillMaxWidth(.9f)
                             .wrapContentHeight(Alignment.Top, true)
@@ -216,6 +217,7 @@ private fun PokedexEntry(
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
+                            .align(Alignment.Center)
                             .widthIn(max = 500.dp)
                             .fillMaxWidth()
                             .aspectRatio(1.2f)
