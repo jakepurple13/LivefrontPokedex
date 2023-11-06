@@ -152,7 +152,7 @@ internal fun PokedexDetail(
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .testTag(Tags.SUCCESS_DETAILS)
                 ) { padding ->
-                    ContentBody(
+                    PokemonInformationBody(
                         pokemon = target.pokemonInfo,
                         padding = padding,
                         modifier = Modifier.fillMaxSize()
@@ -164,7 +164,7 @@ internal fun PokedexDetail(
 }
 
 @Composable
-private fun ContentBody(
+private fun PokemonInformationBody(
     pokemon: PokemonInfo,
     padding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -494,7 +494,7 @@ private fun StateInfoPreview() {
 private fun ContentBodyPreview() {
     LivefrontPokedexTheme {
         Surface {
-            ContentBody(
+            PokemonInformationBody(
                 pokemon = PokemonInfo(
                     id = 25,
                     name = "Pikachu",
