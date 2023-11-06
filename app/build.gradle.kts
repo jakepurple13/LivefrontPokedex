@@ -86,7 +86,7 @@ dependencies {
     implementation(libs.ktor.client.cio)
 
     // Image Loading
-    implementation(libs.coil.compose)
+    implementation(libs.landscapist.glide)
 
     // Hilt
     ksp(libs.hilt.compiler)
@@ -109,4 +109,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.ui.test.junit4)
     androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.androidx.uiautomator)
 }

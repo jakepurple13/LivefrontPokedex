@@ -48,8 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.Tags
@@ -61,6 +59,8 @@ import com.programmersbox.livefrontpokedex.components.PokeballLoadingAnimation
 import com.programmersbox.livefrontpokedex.data.Pokemon
 import com.programmersbox.livefrontpokedex.firstCharCapital
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -193,35 +193,37 @@ private fun PokedexEntry(
                 .padding(4.dp)
                 .fillMaxSize()
         ) {
-            SubcomposeAsyncImage(
-                model = pokemon.imageUrl,
-                contentDescription = pokemon.name,
-                success = {
-                    SubcomposeAsyncImageContent(
-                        contentScale = ContentScale.FillWidth,
-                        colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-                        modifier = Modifier
-                            .widthIn(max = 800.dp)
-                            .fillMaxWidth(.9f)
-                            .wrapContentHeight(Alignment.Top, true)
-                            .scale(1.8f, 1.8f)
-                            .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                            .alpha(.5f)
-                    )
-                    SubcomposeAsyncImageContent(
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .widthIn(max = 500.dp)
-                            .fillMaxWidth()
-                            .aspectRatio(1.2f)
-                            .fillMaxHeight()
-                    )
-                },
+            GlideImage(
+                imageModel = { pokemon.imageUrl },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.FillWidth,
+                    colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+                ),
+                modifier = Modifier
+                    .widthIn(max = 800.dp)
+                    .fillMaxWidth(.9f)
+                    .wrapContentHeight(Alignment.Top, true)
+                    .scale(1.8f, 1.8f)
+                    .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                    .alpha(.5f)
+            )
+
+            GlideImage(
+                imageModel = { pokemon.imageUrl },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Fit,
+                ),
                 loading = {
                     PokeballLoadingAnimation(
                         sizeDp = 150.dp,
+                        modifier = Modifier.size(150.dp)
                     )
-                }
+                },
+                modifier = Modifier
+                    .widthIn(max = 500.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(1.2f)
+                    .fillMaxHeight()
             )
 
             Text(

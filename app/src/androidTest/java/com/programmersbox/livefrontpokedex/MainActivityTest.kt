@@ -5,9 +5,11 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -57,19 +59,19 @@ class MainActivityTest {
     fun canClickOnPikachu() {
         composeTestRule.onNodeWithText("pikachu", ignoreCase = true)
             .performClick()
-        composeTestRule.onNodeWithText("Pikachu", ignoreCase = true)
-            .assertExists()
+        composeTestRule
+            .onAllNodesWithText("Pikachu", ignoreCase = true)
+            .assertCountEquals(2)
     }
 
     @Test
     fun navigateBackFromDetails() {
-        composeTestRule.onNodeWithText("pikachu", ignoreCase = true)
+        composeTestRule.onNodeWithText("Pikachu", ignoreCase = true)
+            .assertIsDisplayed()
             .performClick()
         composeTestRule
-            .onNodeWithContentDescription(
-                appContext.getString(R.string.back_button),
-                useUnmergedTree = true
-            )
+            .onNodeWithContentDescription(appContext.getString(R.string.back_button))
+            .assertIsDisplayed()
             .performClick()
         isDisplayingEntries()
     }

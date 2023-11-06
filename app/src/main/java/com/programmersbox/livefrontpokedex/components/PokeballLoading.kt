@@ -28,10 +28,12 @@ import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 
 @Composable
 fun PokeballLoading() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        PokeballLoadingAnimation(
-            modifier = Modifier.align(Alignment.Center)
-        )
+    Surface {
+        Box(modifier = Modifier.fillMaxSize()) {
+            PokeballLoadingAnimation(
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
 }
 

@@ -12,4 +12,8 @@
     <!--DetailScreen-->
     <string name="show_all_images_details">Show All Images</string>
     <string name="base_stats_details">Base Stats</string>
+    <string name="pokemon_weight_details">Pokemon Weight</string>
+    <string name="pokemon_height_details">Pokemon Height</string>
+    <string name="pokemon_has_unique_female_form_details">Pokemon Has Unique Female Form</string>
+    <string name="pokemon_has_unique_male_form_details">Pokemon Has Unique Male Form</string>
 </resources>

@@ -44,7 +44,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,6 +52,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.alpha
@@ -73,8 +73,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
 import com.programmersbox.livefrontpokedex.LightAndDarkPreviews
 import com.programmersbox.livefrontpokedex.R
 import com.programmersbox.livefrontpokedex.Tags
@@ -86,9 +84,11 @@ import com.programmersbox.livefrontpokedex.firstCharCapital
 import com.programmersbox.livefrontpokedex.ui.theme.FemaleColor
 import com.programmersbox.livefrontpokedex.ui.theme.LivefrontPokedexTheme
 import com.programmersbox.livefrontpokedex.ui.theme.MaleColor
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 internal fun PokedexDetail(
     onBackPress: () -> Unit,
@@ -109,7 +109,7 @@ internal fun PokedexDetail(
                                     onClick = onBackPress,
                                     modifier = Modifier.testTag(Tags.BACK_BUTTON)
                                 ) {
-                                    Icon(Icons.Default.ArrowBack, null)
+                                    Icon(Icons.Default.ArrowBack, stringResource(id = R.string.back_button))
                                 }
                             },
                         )
@@ -123,16 +123,28 @@ internal fun PokedexDetail(
             }
 
             DetailState.Loading -> {
-                Surface { PokeballLoading() }
+                PokeballLoading()
             }
 
             is DetailState.Success -> {
                 val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
                 Scaffold(
                     topBar = {
-                        ContentHeader(
-                            pokemon = target.pokemonInfo,
-                            onBackPress = onBackPress,
+                        TopAppBar(
+                            title = { Text(target.pokemonInfo.name.firstCharCapital()) },
+                            navigationIcon = {
+                                IconButton(
+                                    onClick = onBackPress,
+                                    modifier = Modifier.testTag(Tags.BACK_BUTTON)
+                                ) {
+                                    Icon(Icons.Default.ArrowBack, stringResource(R.string.back_button))
+                                }
+                            },
+                            actions = { Text("#${target.pokemonInfo.id}") },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                            ),
                             scrollBehavior = scrollBehavior
                         )
                     },
@@ -204,7 +216,7 @@ private fun ContentBody(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(Icons.Default.Scale, null)
+                Icon(Icons.Default.Scale, stringResource(R.string.pokemon_weight_details))
                 Text(
                     pokemon.getWeightString(),
                     style = MaterialTheme.typography.bodyMedium
@@ -214,7 +226,7 @@ private fun ContentBody(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(Icons.Default.Height, null)
+                Icon(Icons.Default.Height, stringResource(R.string.pokemon_height_details))
                 Text(
                     pokemon.getHeightString(),
                     style = MaterialTheme.typography.bodyMedium
@@ -295,15 +307,23 @@ private fun ShowImages(pokemon: PokemonInfo) {
                             if (spritesList[SpriteType.Female]?.isEmpty() == true) {
                                 {
                                     Row(it) {
-                                        Icon(Icons.Default.Male, null, tint = MaleColor)
-                                        Icon(Icons.Default.Female, null, tint = FemaleColor)
+                                        Icon(
+                                            Icons.Default.Male,
+                                            stringResource(R.string.pokemon_has_unique_male_form_details),
+                                            tint = MaleColor
+                                        )
+                                        Icon(
+                                            Icons.Default.Female,
+                                            stringResource(R.string.pokemon_has_unique_female_form_details),
+                                            tint = FemaleColor
+                                        )
                                     }
                                 }
                             } else {
                                 {
                                     Icon(
                                         Icons.Default.Male,
-                                        null,
+                                        stringResource(R.string.pokemon_has_unique_male_form_details),
                                         modifier = it,
                                         tint = MaleColor
                                     )
@@ -315,7 +335,7 @@ private fun ShowImages(pokemon: PokemonInfo) {
                             {
                                 Icon(
                                     Icons.Default.Female,
-                                    null,
+                                    stringResource(R.string.pokemon_has_unique_female_form_details),
                                     modifier = it,
                                     tint = FemaleColor
                                 )
@@ -400,37 +420,6 @@ private fun animateDelay(
     return animationProgress
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ContentHeader(
-    pokemon: PokemonInfo,
-    onBackPress: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    val backButtonContentDescription = stringResource(id = R.string.back_button)
-    TopAppBar(
-        title = { Text(pokemon.name.firstCharCapital()) },
-        navigationIcon = {
-            IconButton(
-                onClick = onBackPress,
-                modifier = Modifier
-                    .testTag(Tags.BACK_BUTTON)
-                    .semantics { contentDescription = backButtonContentDescription }
-            ) {
-                Icon(Icons.Default.ArrowBack, stringResource(R.string.back_button))
-            }
-        },
-        actions = {
-            Text("#${pokemon.id}")
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-        ),
-        scrollBehavior = scrollBehavior
-    )
-}
-
 @Composable
 private fun ImageWithBlurImage(
     url: String,
@@ -442,32 +431,33 @@ private fun ImageWithBlurImage(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = modifier.semantics { contentDescription = name }
     ) {
-        SubcomposeAsyncImage(
-            model = url,
-            contentDescription = name,
-            success = {
-                SubcomposeAsyncImageContent(
-                    contentScale = ContentScale.FillWidth,
-                    colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
-                    modifier = Modifier
-                        .size(blurSize)
-                        .fillMaxWidth(.9f)
-                        .wrapContentHeight(Alignment.Top, true)
-                        .scale(1.8f, 1.8f)
-                        .blur(70.dp, BlurredEdgeTreatment.Unbounded)
-                        .alpha(.5f)
-                )
-                SubcomposeAsyncImageContent(
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .size(imageSize)
-                        .fillMaxWidth()
-                        .aspectRatio(1.2f)
-                        .fillMaxHeight()
-                )
-            }
+        GlideImage(
+            imageModel = { url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.FillWidth,
+                colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(3f) }),
+            ),
+            modifier = Modifier
+                .size(blurSize)
+                .fillMaxWidth(.9f)
+                .wrapContentHeight(Alignment.Top, true)
+                .scale(1.8f, 1.8f)
+                .blur(70.dp, BlurredEdgeTreatment.Unbounded)
+                .alpha(.5f)
+        )
+
+        GlideImage(
+            imageModel = { url },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Fit,
+            ),
+            modifier = Modifier
+                .size(imageSize)
+                .fillMaxWidth()
+                .aspectRatio(1.2f)
+                .fillMaxHeight()
         )
         additionalContent()
     }
